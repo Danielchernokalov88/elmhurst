@@ -1,9 +1,9 @@
 class SharesController < ApplicationController
 	def buy
-		  @share = Share.new(share_params)
+			@share = Share.new(share_params)
 		  @share.investment_principal_dup = params[:investment_principal] 
 		  @share.user_id = current_user.id
-		  @share.is_trade_open = true
+			@share.is_trade_open = true
 		  @share.save!
 		  flash[:success] = "Shares Buy Successfully"
 		  redirect_to "/Investor"

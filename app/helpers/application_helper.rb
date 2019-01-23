@@ -18,7 +18,7 @@ module ApplicationHelper
 	
 	def current_btc_price
       response= StockQuote::Stock.quote("aapl").as_json 
-      @current_btc_price_usd =  response["latest_price"] 
+      @current_btc_price_usd =  response["latest_price"]
     end
     
 end
