@@ -66,6 +66,7 @@ module Api
           previous_graph_hash = { x_axis: params[:x_axis], open: params[:open], high: params[:high], low: params[:low], close: params[:close], volume: params[:volume] }
           Graph.last.update_columns(previous_graph_hash) if Graph.count > 0
           Graph.create!(graph_data: graph_data.to_f.round(4),item_name: item_name,item_price: item_price,vendor: item_merchant,user: item_user,invoice: invoice)
+          Graph.order('created_at DESC').offset(50).destroy_all
         end
         return render json: { new_price: graph_data.to_f.round(4), total_fulfilled_requests: total_fulfilled_requests } unless params[:initial]
         points_to_show = Graph.order('created_at DESC').where.not(x_axis: nil).limit(20).select(:x_axis, :open, :high, :low, :close, :volume)
