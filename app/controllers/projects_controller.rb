@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
-  before_action :load_selected_affiliate, only: [:requestsByProject]
+  before_action :load_project, only: [:researchertDetail, :show, :editProject, :submit_request]
 
   ## Add a member to the project
   def add_member
@@ -22,9 +22,7 @@ class ProjectsController < ApplicationController
   end
 
   # GET /projects/1
-  def show
-    @project = Project.find_by_id(params[:id])
-  end
+  def show() end
 
   # GET /projects/new
   def new
@@ -88,12 +86,9 @@ class ProjectsController < ApplicationController
     end
   end
   
-  def editProject
-     @project = Project.find_by_id(params[:id])
-  end
+  def editProject() end
 
   def update_project
-    @project = Project.find_by_id(params[:id])
     if @project.update(update_project_params)
       @project.reload
       flash[:success]="Project updated successfully."
@@ -117,9 +112,8 @@ class ProjectsController < ApplicationController
 
 
   def researchertDetail
-    @project = Project.find_by_id(params[:id])
-    @annotation = Annotation.where(Project_Select: Project.find_by_id(params[:id]).title, annotation_creator_id: current_user.id).paginate(:page => params[:page], :per_page => 4).order('id DESC') rescue nil
-    @member = Project.find_by_id(params[:id]).members rescue nil
+    @annotation = Annotation.where(Project_Select: @project.title, annotation_creator_id: current_user.id).paginate(:page => params[:page], :per_page => 4).order('id DESC') rescue nil
+    @member = @project.members rescue nil
   end
 
   def accountHistory
@@ -169,8 +163,12 @@ class ProjectsController < ApplicationController
 
   private
 
-  def load_selected_affiliate
-    @selected_affiliate = Project.find_by(id: params[:affiliate_id])
+  def load_project
+    @project = Project.find_by(id: params[:id])
+    if @project.blank?
+      flash[:error] = 'Invalid Affiliate Id'
+      return redirect_to action: 'mainResearcher'
+    end
   end
 
   # Use callbacks to share common setup or constraints between actions.
