@@ -12,9 +12,10 @@ module AnnotationsHelper
 	  @annotation_created_at = Annotation.find_by_id(params[:id]).created_at.localtime rescue nil 
 	end
 
-	def annotation_item_price_sum
-       @annotation_price = Annotation.where(Project_Select: "fghgdgjgjfgjgj").where(annotation_creator_id: current_user.id).pluck(:Item_Price).compact.sum.round(4)
-       @annotation_price.present?  ? @annotation_price : 0
+	def annotation_item_price_sum(project_title: nil)
+		return 0 if project_title.blank?
+    @annotation_price = Annotation.where(Project_Select: project_title).where(annotation_creator_id: current_user.id).pluck(:Item_Price).compact.sum.round(4)
+    @annotation_price.present? ? @annotation_price : 0
 	end
 
 	def annotation_project_description
